@@ -13,15 +13,15 @@
 <canvas id="myCanvas" width="735" height="375"></canvas>
 
 <script>
-var totalResources = 6;
+var totalResources = 3;
 var numResourcesLoaded = 0;
 var fps = 30;
 var images = {};
-var elements = new Array(52);
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 var ballX = 0;
 var ballY = 0;
+var elements = new Array(52);
 for (var i = 0; i < 52; i++) {
   elements[i] = new Array(28);
 }
@@ -32,12 +32,9 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-loadImage("ball1");
-loadImage("grass");
-loadImage("wall");
-loadImage("water");
-loadImage("hole");
-loadImage("start");
+loadImage("ball");
+loadImage("tileset_0");
+loadImage("tileset_1");
 loadCourse();
 
 function loadImage(name) {
@@ -55,129 +52,22 @@ function resourceLoaded() {
   }
 }
 
-function loadCourse() { //testaust vaa
-	g1 = Math.random()*0.06;
-	g2 = Math.random()*0.2;
-	var nowater = false;
-	if (Math.random(12) == 1)
-		nowater = true;
-	for (x = 0; x < 49; x++) { 
-		for (y = 0; y < 25; y++) { 
-			elements[x][y] = 0;
-				if (Math.random() < (g1) || x == 0 || y == 0 || x == 48 || y == 24)
-					elements[x][y] = 1;
-				if (!nowater)
-					if (Math.random() < (g2))
-						elements[x][y] = 2;
+function loadCourse() {
+	for (x = 0; x < 52; x++) { 
+		for (y = 0; y < 28; y++) { 
+			elements[x][y] = Math.random()*10;
 		}
 	}
-	var rx = 1+Math.abs(Math.random()*46);
-	var ry = 1+Math.abs(Math.random()*22);
-	elements[parseInt(rx)][parseInt(ry)] = 3;
-	rx = 1+Math.abs(Math.random()*46);
-	ry = 1+Math.abs(Math.random()*22);
-	elements[parseInt(rx)][parseInt(ry)] = 4;
-	ballX = parseInt(rx)*15;
-	ballY = parseInt(ry)*15;
-	r1 = Math.random()*0.3;
-	r2 = Math.random()*0.3;
-	r3 = Math.random()*0.3;
-	a1 = 3+Math.abs(Math.random()*17);
-	a2 = 3+Math.abs(Math.random()*17);
-	a3 = 3+Math.abs(Math.random()*17);
-	c = 0;
-	
-	for (z = 0; z < 100; z++) {
-		c = Math.abs(Math.random()*3);
-		if (parseInt(c) == 0 && a1 > 0) {
-			a1 -= 1;
-			if (!nowater) {
-					for (x = 0; x < 49; x++) { 
-						for (y = 0; y < 25; y++) {
-							if (elements[x][y] < 3) {
-								if (x > 0)
-									if (elements[x-1][y] == 2 && Math.random() < r2)
-										elements[x][y] = 2;
-								if (y > 0)
-									if (elements[x][y-1] == 2 && Math.random() < r2)
-										elements[x][y] = 2;
-								if (x < 48)
-									if (elements[x+1][y] == 2 && Math.random() < r2)
-										elements[x][y] = 2;
-								if (y < 24)
-									if (elements[x][y+1] == 2 && Math.random() < r2)
-										elements[x][y] = 2;
-							}
-						}
-					}
-			}
-		}
-		if (parseInt(c) == 1 && a2 > 0) {
-			a2 -= 1;
-				for (x = 0; x < 49; x++) { 
-					for (y = 0; y < 25; y++) {
-						if (elements[x][y] < 3) {
-							if (x > 0)
-								if (elements[x-1][y] == 1 && Math.random() < r1)
-									elements[x][y] = 1;
-							if (y > 0)
-								if (elements[x][y-1] == 1 && Math.random() < r1)
-									elements[x][y] = 1;
-							if (x < 48)
-								if (elements[x+1][y] == 1 && Math.random() < r1)
-									elements[x][y] = 1;
-							if (y < 24)
-								if (elements[x][y+1] == 1 && Math.random() < r1)
-									elements[x][y] = 1;
-						}
-					}
-				}
-		}
-		if (parseInt(c) == 2 && a3 > 0) {
-			a3 -= 1;
-				for (x = 0; x < 49; x++) { 
-					for (y = 0; y < 25; y++) {
-						if (elements[x][y] < 3 && x != 0 && y != 0 && x != 48 && y != 24) {
-							if (x > 0)
-								if (elements[x-1][y] == 0 && Math.random() < r3)
-									elements[x][y] = 0;
-							if (y > 0)
-								if (elements[x][y-1] == 0 && Math.random() < r3)
-									elements[x][y] = 0;
-							if (x < 48)
-								if (elements[x+1][y] == 0 && Math.random() < r3)
-									elements[x][y] = 0;
-							if (y < 24)
-								if (elements[x][y+1] == 0 && Math.random() < r3)
-									elements[x][y] = 0;
-						}
-					}
-			}
-		}
-	}
-	
-	
-		
-		
 }
 
 function render() {
   canvas.width = canvas.width;  
 	for (x = 0; x < 52; x++) { 
 		for (y = 0; y < 28; y++) { 
-			if (elements[x][y] == 0)
-				ctx.drawImage(images["grass"], x*15, y*15);
-			if (elements[x][y] == 1)
-				ctx.drawImage(images["wall"], x*15, y*15);
-			if (elements[x][y] == 2)
-				ctx.drawImage(images["water"], x*15, y*15);
-			if (elements[x][y] == 3)
-				ctx.drawImage(images["hole"], x*15, y*15);
-			if (elements[x][y] == 4)
-				ctx.drawImage(images["grass"], x*15, y*15);
+			ctx.drawImage(images["tileset_0"], 15, 15, elements[x][y]%15, elements[x][y]/15, x*15, y*15, 15, 15);
 		}
 	}
-	ctx.drawImage(images["ball1"], ballX, ballY);
+	ctx.drawImage(images["ball"], ballX, ballY);
 }
 
 </script>
