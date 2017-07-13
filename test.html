@@ -28,18 +28,20 @@
 <p align="middle">jotai paskaa tähä yläpuolel sit ku tarvii reps</p>
 <br>
 
-<canvas id="game" width="735" height="375"></canvas>
+<canvas id="game" width="735" height="435"></canvas>
 
 <script>
 var totalResources = 4;
 var numResourcesLoaded = 0;
-var fps = 50;
+var fps = 100;
+var drawTrack = false;
 var images = {};
+var image = new Image();
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var mouseX = 0;
 var mouseY = 0;
-var ball = {x:735/3, y:375/3, vx:0, vy:0};
+var ball = {x:735/3, y:375/3, vx:500.0, vy:100.0};
 var elements = new Array(52);
 var objects = new Array(52);
 var shapes = new Array(52);
@@ -85,29 +87,52 @@ function resourceLoaded() {
   numResourcesLoaded += 1;
   if(numResourcesLoaded === totalResources) {
     setInterval(render, 1000 / fps);
+	setInterval(processGame, 1);
   }
 }
 
 function loadCourse() {
 	for (x = 0; x < 49; x++) { 
 		for (y = 0; y < 25; y++) { 
-		elements[x][y] = 0;
-			if (x == 0 || x == 48 || y == 0 || y == 24)
-				elements[x][y] = 1;
+			elements[x][y] = Math.random()*3;
 		}
+	}
+	drawTrack = true;
+}
+
+function processGame() { //surkeet fysiiatk pistin vaa jotai alkuu lol
+	ball.x += ball.vx * 0.0025;
+	ball.y += ball.vy * 0.0025;
+	ball.vx -= (ball.vx * 0.004);
+	ball.vy -= (ball.vy * 0.004);
+	if (ball.vx < 20 && ball.vy < 20) {
+		ball.vx = 0;
+		ball.vy = 0;
 	}
 }
 
-function render(e) {
+function render() {
   canvas.width = canvas.width;  
-	for (x = 0; x < 49; x++) {
-		for (y = 0; y < 25; y++) {
-			ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
-			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+  if (drawTrack) {
+		for (x = 0; x < 49; x++) {
+			for (y = 0; y < 25; y++) {
+				ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+				ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+			}
 		}
+		image.id = "pic";
+		image.src = canvas.toDataURL();
+		drawTrack = false;
 	}
+	ctx.fillStyle="#FFFFFF";
+	ctx.font = "12px Verdana white";
+	ctx.drawImage(image, 0, 0);
 	var context = canvas.getContext("2d");
 	ctx.drawImage(images["ball"], ball.x, ball.y);
+	ctx.fillText("x: " +Math.round(ball.x * 100) / 100, 600, 390);
+	ctx.fillText("y: " +Math.round(ball.y * 100) / 100, 600, 402);
+	ctx.fillText("vx: " +Math.round(ball.vx * 100) / 100, 600, 414);
+	ctx.fillText("vy: " +Math.round(ball.vy * 100) / 100, 600, 426);
 }
 
 </script>
