@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Minigolf</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="735" height="375"></canvas>
+
+<script>
+
+var images = {};
+
+loadImage("ball1");
+
+function loadImage(name) {
+
+  images[name] = new Image();
+  images[name].onload = function() { 
+      resourceLoaded();
+  }
+  images[name].src = "images/" + name + ".png";
+}
+
+var totalResources = 1;
+var numResourcesLoaded = 0;
+var fps = 30;
+
+function resourceLoaded() {
+
+  numResourcesLoaded += 1;
+  if(numResourcesLoaded === totalResources) {
+    setInterval(redraw, 1000 / fps);
+  }
+}
+
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+var ballX = 245;
+var ballY = 185;
+
+function redraw() {
+
+  ballX += Math.random() * 1 - 0.5;
+  ballY += Math.random() * 1 - 0.5;
+
+  canvas.width = canvas.width;
+                      
+  ctx.drawImage(images["ball1"], ballX, ballY);
+}
+</script>
+
+</body>
+</html>
