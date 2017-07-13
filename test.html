@@ -5,13 +5,15 @@
     <title>Minigolf</title>
     <style>
     	* { 
-		background: #eeeeee;
+			background: #eeeeee;
 			padding: 0;
 			margin: 0;
 		}
     	canvas { 
 			display: block;
 			margin: 0 auto;
+			background: #99ff99;
+			border:10px ridge #ffffff;
 		}
 		p {
 			font-size: 12px;
@@ -21,11 +23,11 @@
 </head>
 <body>
 
-<p align="middle">line1</p>
-<p align="middle">line2</p>
-<p align="middle">line3</p>
+<br>
+<p align="middle">jotai paskaa tähä yläpuolel sit ku tarvii reps</p>
+<br>
 
-<canvas id="game" width="735" height="375"></canvas>
+<canvas id="game" width="795" height="435"></canvas>
 
 <script>
 var totalResources = 4;
@@ -89,11 +91,11 @@ function render() {
   canvas.width = canvas.width;  
 	for (x = 0; x < 49; x++) {
 		for (y = 0; y < 25; y++) {
-			ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
-			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+			ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, 30+x*15, 30+y*15, 15, 15);
+			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, 30+x*15, 30+y*15, 15, 15);
 		}
 	}
-	ctx.drawImage(images["ball"], ballX, ballY);
+	ctx.drawImage(images["ball"], 30+ballX, 30+ballY);
 }
 
 </script>
