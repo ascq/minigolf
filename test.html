@@ -13,7 +13,7 @@
 <canvas id="myCanvas" width="735" height="375"></canvas>
 
 <script>
-var totalResources = 3;
+var totalResources = 4;
 var numResourcesLoaded = 0;
 var fps = 30;
 var images = {};
@@ -22,8 +22,16 @@ var ctx = canvas.getContext("2d");
 var ballX = 0;
 var ballY = 0;
 var elements = new Array(52);
+var objects = new Array(52);
+var shapes = new Array(52);
 for (var i = 0; i < 52; i++) {
   elements[i] = new Array(28);
+}
+for (var i = 0; i < 52; i++) {
+  objects[i] = new Array(28);
+}
+for (var i = 0; i < 52; i++) {
+  shapes[i] = new Array(28);
 }
 
 document.addEventListener('keydown', function(event) {
@@ -35,6 +43,7 @@ document.addEventListener('keydown', function(event) {
 loadImage("ball");
 loadImage("tileset_0");
 loadImage("tileset_1");
+loadImage("tileset_2");
 loadCourse();
 
 function loadImage(name) {
@@ -53,18 +62,23 @@ function resourceLoaded() {
 }
 
 function loadCourse() {
-	for (x = 0; x < 52; x++) { 
-		for (y = 0; y < 28; y++) { 
-			elements[x][y] = Math.random()*10;
+	for (x = 0; x < 49; x++) { 
+		for (y = 0; y < 25; y++) { 
+			elements[x][y] = Math.random()*13;
+			shapes[x][y] = Math.random()*6;
 		}
 	}
 }
 
 function render() {
   canvas.width = canvas.width;  
-	for (x = 0; x < 52; x++) { 
-		for (y = 0; y < 28; y++) { 
-			ctx.drawImage(images["tileset_0"], 15, 15, elements[x][y]%15, elements[x][y]/15, x*15, y*15, 15, 15);
+	for (x = 0; x < 4; x++) {
+		for (y = 0; y < 4; y++) {
+			ctx.drawImage(images["tileset_2"], parseInt(shapes[x][y]%10)*15, parseInt(shapes[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+			ctx.globalCompositeOperation = 'source-in';
+			ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+			ctx.globalCompositeOperation = 'source-over';
+			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
 		}
 	}
 	ctx.drawImage(images["ball"], ballX, ballY);
