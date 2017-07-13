@@ -8,16 +8,16 @@
 			background: #eeeeee;
 			padding: 0;
 			margin: 0;
+			background-image: url(images/noise.png);
 		}
     	canvas { 
 			display: block;
 			margin: 0 auto;
-			background: #99ff99;
-			border:10px ridge #ffffff;
 		}
 		p {
 			font-size: 12px;
 			font-family: "Verdana";
+			color: white;
 		}
     </style>
 </head>
@@ -27,7 +27,7 @@
 <p align="middle">jotai paskaa tähä yläpuolel sit ku tarvii reps</p>
 <br>
 
-<canvas id="game" width="795" height="435"></canvas>
+<canvas id="game" width="735" height="375"></canvas>
 
 <script>
 var totalResources = 4;
@@ -36,8 +36,8 @@ var fps = 50;
 var images = {};
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var ballX = 0;
-var ballY = 0;
+var ballX = 735/3;
+var ballY = 375/3;
 var ball = {x:0, y:0, vx:0, vy:0};
 var elements = new Array(52);
 var objects = new Array(52);
@@ -82,7 +82,9 @@ function resourceLoaded() {
 function loadCourse() {
 	for (x = 0; x < 49; x++) { 
 		for (y = 0; y < 25; y++) { 
-			elements[x][y] = Math.random()*3;
+		elements[x][y] = 0;
+			if (x == 0 || x == 48 || y == 0 || y == 24)
+				elements[x][y] = 1;
 		}
 	}
 }
@@ -91,11 +93,11 @@ function render() {
   canvas.width = canvas.width;  
 	for (x = 0; x < 49; x++) {
 		for (y = 0; y < 25; y++) {
-			ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, 30+x*15, 30+y*15, 15, 15);
-			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, 30+x*15, 30+y*15, 15, 15);
+			ctx.drawImage(images["tileset_0"], parseInt(elements[x][y]%10)*15, parseInt(elements[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
+			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
 		}
 	}
-	ctx.drawImage(images["ball"], 30+ballX, 30+ballY);
+	ctx.drawImage(images["ball"], ballX, ballY);
 }
 
 </script>
