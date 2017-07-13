@@ -13,13 +13,33 @@
 <canvas id="myCanvas" width="735" height="375"></canvas>
 
 <script>
-
+var totalResources = 4;
+var numResourcesLoaded = 0;
+var fps = 30;
 var images = {};
+var elements = new Array(52);
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var ballX = 245;
+var ballY = 185;
+for (var i = 0; i < 52; i++) {
+  elements[i] = new Array(28);
+}
+
+document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 32) {
+        loadCourse();
+    }
+});
 
 loadImage("ball1");
+loadImage("grass");
+loadImage("wall");
+loadImage("water");
+loadImage("hole");
+loadCourse();
 
 function loadImage(name) {
-
   images[name] = new Image();
   images[name].onload = function() { 
       resourceLoaded();
@@ -27,34 +47,87 @@ function loadImage(name) {
   images[name].src = "images/" + name + ".png";
 }
 
-var totalResources = 1;
-var numResourcesLoaded = 0;
-var fps = 30;
-
 function resourceLoaded() {
-
   numResourcesLoaded += 1;
   if(numResourcesLoaded === totalResources) {
-    setInterval(redraw, 1000 / fps);
+    setInterval(render, 1000 / fps);
   }
 }
 
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
+function loadCourse() {
+	for (x = 0; x < 49; x++) { 
+		for (y = 0; y < 25; y++) { 
+			elements[x][y] = 0;
+				if (Math.random() < (Math.random() * 0.005) || x == 0 || y == 0 || x == 48 || y == 24)
+					elements[x][y] = 1;
+				if (Math.random() < (Math.random() * 0.02))
+					elements[x][y] = 2;
+		}
+	}
+	var rx = Math.abs(Math.random()*48);
+	var ry = Math.abs(Math.random()*24);
+	elements[parseInt(rx)][parseInt(ry)] = 3;
+	for (i = 0; i < 5+Math.abs(Math.random()*15); i++) {
+		for (x = 0; x < 49; x++) { 
+			for (y = 0; y < 25; y++) {
+				if (elements[x][y] != 3) {
+					if (x > 0)
+						if (elements[x-1][y] == 1 && Math.random() < 0.3)
+							elements[x][y] = 1;
+					if (y > 0)
+						if (elements[x][y-1] == 1 && Math.random() < 0.3)
+							elements[x][y] = 1;
+					if (x < 48)
+						if (elements[x+1][y] == 1 && Math.random() < 0.3)
+							elements[x][y] = 1;
+					if (y < 24)
+						if (elements[x][y+1] == 1 && Math.random() < 0.3)
+							elements[x][y] = 1;
+				}
+			}
+		}
+	}
+	for (i = 0; i < 5+Math.abs(Math.random()*15); i++) {
+		for (x = 0; x < 49; x++) { 
+			for (y = 0; y < 25; y++) {
+			if (elements[x][y] != 3) {
+					if (x > 0)
+						if (elements[x-1][y] == 2 && Math.random() < 0.3)
+							elements[x][y] = 2;
+					if (y > 0)
+						if (elements[x][y-1] == 2 && Math.random() < 0.3)
+							elements[x][y] = 2;
+					if (x < 48)
+						if (elements[x+1][y] == 2 && Math.random() < 0.3)
+							elements[x][y] = 2;
+					if (y < 24)
+						if (elements[x][y+1] == 2 && Math.random() < 0.3)
+							elements[x][y] = 2;
+				}
+			}
+		}
+	}
+}
 
-var ballX = 245;
-var ballY = 185;
-
-function redraw() {
-
+function render() {
   ballX += Math.random() * 1 - 0.5;
   ballY += Math.random() * 1 - 0.5;
-
-  canvas.width = canvas.width;
-                      
-  ctx.drawImage(images["ball1"], ballX, ballY);
+  canvas.width = canvas.width;  
+	for (x = 0; x < 52; x++) { 
+		for (y = 0; y < 28; y++) { 
+			if (elements[x][y] == 0)
+				ctx.drawImage(images["grass"], x*15, y*15);
+			if (elements[x][y] == 1)
+				ctx.drawImage(images["wall"], x*15, y*15);
+			if (elements[x][y] == 2)
+				ctx.drawImage(images["water"], x*15, y*15);
+			if (elements[x][y] == 3)
+				ctx.drawImage(images["hole"], x*15, y*15);
+		}
+	}
+	ctx.drawImage(images["ball1"], ballX, ballY);
 }
-</script>
 
+</script>
 </body>
 </html>
