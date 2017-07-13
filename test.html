@@ -13,6 +13,7 @@
     	canvas { 
 			display: block;
 			margin: 0 auto;
+			position: relative;
 		}
 		p {
 			font-size: 12px;
@@ -36,9 +37,9 @@ var fps = 50;
 var images = {};
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
-var ballX = 735/3;
-var ballY = 375/3;
-var ball = {x:0, y:0, vx:0, vy:0};
+var mouseX = 0;
+var mouseY = 0;
+var ball = {x:735/3, y:375/3, vx:0, vy:0};
 var elements = new Array(52);
 var objects = new Array(52);
 var shapes = new Array(52);
@@ -57,6 +58,14 @@ document.addEventListener('keydown', function(event) {
         loadCourse();
     }
 });
+
+canvas.addEventListener('mousemove', function(event) {
+	var rect = canvas.getBoundingClientRect();
+    mouseX = event.clientX - rect.left;
+	mouseY = event.clientY - rect.top;
+});
+
+
 
 loadImage("ball");
 loadImage("tileset_0");
@@ -89,7 +98,7 @@ function loadCourse() {
 	}
 }
 
-function render() {
+function render(e) {
   canvas.width = canvas.width;  
 	for (x = 0; x < 49; x++) {
 		for (y = 0; y < 25; y++) {
@@ -97,7 +106,8 @@ function render() {
 			ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
 		}
 	}
-	ctx.drawImage(images["ball"], ballX, ballY);
+	var context = canvas.getContext("2d");
+	ctx.drawImage(images["ball"], ball.x, ball.y);
 }
 
 </script>
