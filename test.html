@@ -33,18 +33,19 @@
 <script>
 var totalResources = 4;
 var numResourcesLoaded = 0;
-var fps = 100;
 var drawTrack = false;
 var images = {};
-var image = new Image();
+var trackimage = new Image();
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var mouseX = 0;
 var mouseY = 0;
-var ball = {x:735/3, y:375/3, vx:500.0, vy:100.0};
+var ball = {x:735/3, y:375/3, vx:300.0, vy:0.0};
 var elements = new Array(52);
 var objects = new Array(52);
 var shapes = new Array(52);
+ctx.fillStyle="#FFFFFF";
+ctx.font = "12px Verdana white";
 for (var i = 0; i < 52; i++) {
   elements[i] = new Array(28);
 }
@@ -86,7 +87,7 @@ function loadImage(name) {
 function resourceLoaded() {
   numResourcesLoaded += 1;
   if(numResourcesLoaded === totalResources) {
-    setInterval(render, 1000 / fps);
+    setInterval(render, 1);
 	setInterval(processGame, 1);
   }
 }
@@ -120,14 +121,10 @@ function render() {
 				ctx.drawImage(images["tileset_1"], parseInt(objects[x][y]%10)*15, parseInt(objects[x][y]/10)*15, 15, 15, x*15, y*15, 15, 15);
 			}
 		}
-		image.id = "pic";
-		image.src = canvas.toDataURL();
+		trackimage.src = canvas.toDataURL();
 		drawTrack = false;
 	}
-	ctx.fillStyle="#FFFFFF";
-	ctx.font = "12px Verdana white";
-	ctx.drawImage(image, 0, 0);
-	var context = canvas.getContext("2d");
+	ctx.drawImage(trackimage, 0, 0);
 	ctx.drawImage(images["ball"], ball.x, ball.y);
 	ctx.fillText("x: " +Math.round(ball.x * 100) / 100, 600, 390);
 	ctx.fillText("y: " +Math.round(ball.y * 100) / 100, 600, 402);
