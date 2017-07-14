@@ -28,11 +28,13 @@
 <p align="middle">jotai paskaa tähä yläpuolel sit ku tarvii reps</p>
 <br>
 
-<canvas id="game" width="735" height="435"></canvas>
+<canvas id="game" width="735" height="500"></canvas>
 
 <script>
+var mouseInBounds = false;
 var totalResources = 4;
 var numResourcesLoaded = 0;
+var rightClicks = 0;
 var drawTrack = false;
 var images = {};
 var trackimage = new Image();
@@ -40,7 +42,7 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var mouseX = 0;
 var mouseY = 0;
-var ball = {x:735/3, y:375/3, vx:300.0, vy:0.0};
+var ball = {x:735/3, y:375/3, vx:300.0, vy:200.0, shooting:false};
 var elements = new Array(52);
 var objects = new Array(52);
 var shapes = new Array(52);
@@ -64,8 +66,38 @@ document.addEventListener('keydown', function(event) {
 
 canvas.addEventListener('mousemove', function(event) {
 	var rect = canvas.getBoundingClientRect();
-    mouseX = event.clientX - rect.left;
+    mouseX = event.clientX - rect.left - 0.5;
 	mouseY = event.clientY - rect.top;
+	mouseInBounds = true;
+	if (mouseY >= 375)
+		mouseInBounds = false;
+});
+
+canvas.addEventListener ('mouseout', function(event) {
+	mouseInBounds = false;
+});
+
+canvas.addEventListener ('mouseup', function(event) {
+	if (mouseInBounds && event.button == 0) {
+		shoot();
+	}
+});
+
+canvas.addEventListener ('contextmenu', function(event) {
+	event.preventDefault();
+});
+
+canvas.addEventListener ('auxclick', function(event) {
+	if (event.button == 1) {
+		ball.x = mouseX;
+		ball.y = mouseY;
+		ball.vx = 0;
+		ball.vy = 0;
+		ball.moving = false;
+	}
+	if (event.button == 2) {
+		rightClicks += rightClicks >= 3 ? -3 : 1;
+	}
 });
 
 // tässä eka testirata XXD!
@@ -79,10 +111,10 @@ var str = `1111111111111111111111111111111111111111111111111
 1000000001000000000000000000000000000000000000001
 1000000001000000000000000000000000000000000000001
 1000000001111110000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
+1000000002222220000000000000000000000000000000001
+1000000002222220000000000000000000000000000000001
+1000000002222220000000000000000000000000000000001
+1000000002222220000000000000000000000000000000001
 1000000000000000000000000000000000000000000000001
 1000000000000000001111111111111111110000000000001
 1000000000000000000000000000000000000000000000001
@@ -92,7 +124,7 @@ var str = `1111111111111111111111111111111111111111111111111
 1000000000000000000000000000000000000000000000001
 1000000000000000000000000000000000000000000000001
 1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
+1000000000000000000000000000000000000000000001001
 1111111111111111111111111111111111111111111111111`;
 
 var elementFile = str.split('\n');
@@ -107,6 +139,7 @@ loadImage("ball");
 loadImage("tileset_0");
 loadImage("tileset_1");
 loadImage("tileset_2");
+loadImage("overlaytest");
 loadCourse();
 
 function loadImage(name) {
@@ -121,12 +154,12 @@ function resourceLoaded() {
   numResourcesLoaded += 1;
   if(numResourcesLoaded === totalResources) {
     setInterval(render, 1);
-	setInterval(processGame, 1);
+	setInterval(processGame, 10);
   }
 }
 
 function loadCourse() {
-  for (x = 0; x < 49; x++) {
+	for (x = 0; x < 49; x++) {
 		for (y = 0; y < 25; y++) {
 	   	elements[x][y] = elementFile[y][x]; // tän vois salee koittaa kääntää oikeinpäi XD
 		}
@@ -134,14 +167,122 @@ function loadCourse() {
 	drawTrack = true;
 }
 
+function fixCoords() {
+	if (ball.x < 6)
+		ball.x = 6;
+	if (ball.y < 6)
+		ball.y = 6;
+	if (ball.x > 728)
+		ball.x = 728;
+	if (ball.y > 368)
+		ball.y = 368;
+}
+
 function processGame() { //surkeet fysiiatk pistin vaa jotai alkuu lol
-	ball.x += ball.vx * 0.0025;
-	ball.y += ball.vy * 0.0025;
-	ball.vx -= (ball.vx * 0.004);
-	ball.vy -= (ball.vy * 0.004);
-	if (ball.vx < 20 && ball.vy < 20) {
+	fixCoords();
+	ball.x += ball.vx * 0.02;
+	ball.y += ball.vy * 0.02;
+	ball.vx -= (ball.vx * 0.01);
+	ball.vy -= (ball.vy * 0.01);
+	if (ball.vx < 6 && ball.vy < 6 && ball.vx > -6 && ball.vy > -6) {
 		ball.vx = 0;
 		ball.vy = 0;
+		ball.x = Math.round(ball.x);
+		ball.y = Math.round(ball.y);
+		ball.shooting = false;
+	}
+	fixCoords();
+}
+
+function shoot() {
+	var dx = mouseX - (Math.round(ball.x));
+	var dy = mouseY - (Math.round(ball.y));
+	if (rightClicks == 1) {
+		dx = -dx;
+		dy = -dy;
+	}
+	if (rightClicks == 2) {
+		var temp1 = dx;
+		dx = -dy;
+		dy = temp1;
+	}
+	if (rightClicks == 3) {
+		var temp2 = dx;
+		dx = dy;
+		dy = -temp2;
+	}
+	ball.vx = dx;
+	ball.vy = dy;
+	while (Math.pow(ball.vx, 2) + Math.pow(ball.vy, 2) > Math.pow(150, 2)) {
+		ball.vx = ball.vx * 1000 / 1001;
+		ball.vy = ball.vy * 1000 / 1001;
+	}
+	var power = ball.vx * ball.vx + ball.vy * ball.vy;
+	power /= 10000;
+	ball.vx *= 2.0 + power;
+	ball.vy *= 2.0 + power;
+	ball.shooting = true;
+	rightClicks = 0;
+}
+
+function drawLine(x0, y0, x1, y1) {
+	var maxlength = 150;
+	var x0 = 0;
+	var y0 = 0;
+	var x1 = 0;
+	var y1 = 0;
+	var dx = (Math.round(ball.x) - mouseX);
+	var dy = (Math.round(ball.y) - mouseY);
+	if (rightClicks == 1) {
+		dx = -dx;
+		dy = -dy;
+	}
+	if (rightClicks == 2) {
+		var temp1 = dx;
+		dx = -dy;
+		dy = temp1;
+	}
+	if (rightClicks == 3) {
+		var temp2 = dx;
+		dx = dy;
+		dy = -temp2;
+	}
+	if (Math.pow(dx, 2) + Math.pow(dy, 2) < Math.pow(maxlength, 2)) {
+		var angle = (Math.atan2(dy, dx) + Math.PI);
+		var px = (Math.round(ball.x) + Math.cos(angle) * Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2))));
+		var py = (Math.round(ball.y) + Math.sin(angle) * Math.sqrt((Math.pow(dx, 2) + Math.pow(dy, 2))));
+		x0 = Math.round(ball.x);
+		y0 = Math.round(ball.y);
+		x1 = Math.round(px);
+		y1 = Math.round(py);
+	} else {
+		var angle = (Math.atan2(dy, dx) + Math.PI);
+		var px = (Math.round(ball.x) + Math.cos(angle) * maxlength);
+		var py = (Math.round(ball.y) + Math.sin(angle) * maxlength);
+		x0 = Math.round(ball.x);
+		y0 = Math.round(ball.y);
+		x1 = Math.round(px);
+		y1 = Math.round(py);
+	}
+	var length = 200;
+    var dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+    var dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1; 
+    var err = (dx > dy ? dx : -dy) / 3;        
+    while (length > 1) {
+		length -= 1;
+		ctx.fillStyle="#800020";
+		ctx.fillRect(x0, y0, 1, 1);
+		if (x0 === x1 && y0 === y1)
+			break;
+		var e2 = err;
+		if (e2 > -dx) {
+			err -= dy;
+			x0 += sx;
+		}
+		if (e2 < dy) {
+			err += dx;
+			y0 += sy;
+		}
 	}
 }
 
@@ -158,11 +299,16 @@ function render() {
 		drawTrack = false;
 	}
 	ctx.drawImage(trackimage, 0, 0);
-	ctx.drawImage(images["ball"], ball.x, ball.y);
+	if (mouseInBounds && !ball.shooting)
+		drawLine();
+	ctx.drawImage(images["ball"], ball.x-7, ball.y-7);
+	ctx.fillStyle="#FFFFFF";
 	ctx.fillText("x: " +Math.round(ball.x * 100) / 100, 600, 390);
 	ctx.fillText("y: " +Math.round(ball.y * 100) / 100, 600, 402);
 	ctx.fillText("vx: " +Math.round(ball.vx * 100) / 100, 600, 414);
 	ctx.fillText("vy: " +Math.round(ball.vy * 100) / 100, 600, 426);
+	ctx.fillText("rightClicks: " +rightClicks, 600, 438);
+	ctx.drawImage(images["overlaytest"], 0, 0);
 }
 
 </script>
