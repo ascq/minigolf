@@ -28,7 +28,7 @@
 <p align="middle">jotai paskaa tähä yläpuolel sit ku tarvii reps</p>
 <br>
 
-<canvas id="game" width="735" height="500"></canvas>
+<canvas id="game" width="735" height="475"></canvas>
 
 <script>
 var mouseInBounds = false;
@@ -64,16 +64,31 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+function setCursor(b) {
+	if (b) {
+		if (mouseInBounds && !ball.shooting)
+			document.body.style.cursor = "crosshair";
+	} else {
+		document.body.style.cursor = "default";
+	}
+}
+
 canvas.addEventListener('mousemove', function(event) {
 	var rect = canvas.getBoundingClientRect();
     mouseX = event.clientX - rect.left - 0.5;
 	mouseY = event.clientY - rect.top;
-	mouseInBounds = true;
-	if (mouseY >= 375)
+	if (!mouseInBounds && mouseY < 375) {
+		setCursor(true);
+		mouseInBounds = true;
+	} if (mouseInBounds && mouseY >= 375) {
+		setCursor(false);
 		mouseInBounds = false;
+	}
+		
 });
 
 canvas.addEventListener ('mouseout', function(event) {
+	document.body.style.cursor = "default";
 	mouseInBounds = false;
 });
 
@@ -94,6 +109,7 @@ canvas.addEventListener ('auxclick', function(event) {
 		ball.vx = 0;
 		ball.vy = 0;
 		ball.moving = false;
+		setCursor(true);
 	}
 	if (event.button == 2) {
 		rightClicks += rightClicks >= 3 ? -3 : 1;
@@ -190,6 +206,7 @@ function processGame() { //surkeet fysiiatk pistin vaa jotai alkuu lol
 		ball.x = Math.round(ball.x);
 		ball.y = Math.round(ball.y);
 		ball.shooting = false;
+		setCursor(true);
 	}
 	fixCoords();
 }
@@ -223,6 +240,7 @@ function shoot() {
 	ball.vy *= 2.0 + power;
 	ball.shooting = true;
 	rightClicks = 0;
+	setCursor(false);
 }
 
 function drawLine(x0, y0, x1, y1) {
@@ -307,10 +325,11 @@ function render() {
 	ctx.fillText("y: " +Math.round(ball.y * 100) / 100, 600, 402);
 	ctx.fillText("vx: " +Math.round(ball.vx * 100) / 100, 600, 414);
 	ctx.fillText("vy: " +Math.round(ball.vy * 100) / 100, 600, 426);
-	ctx.fillText("rightClicks: " +rightClicks, 600, 438);
+	ctx.fillText("mouseInBounds: " +mouseInBounds, 600, 438);
 	ctx.drawImage(images["overlaytest"], 0, 0);
 }
-
 </script>
+
+
 </body>
 </html>
