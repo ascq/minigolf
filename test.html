@@ -25,7 +25,7 @@
 <body>
 
 <br>
-<p align="middle">jotai paskaa tähä yläpuolel sit ku tarvii reps</p>
+<p align="middle" id="teksti"></p>
 <br>
 
 <canvas id="game" width="735" height="475"></canvas>
@@ -46,6 +46,9 @@ var ball = {x:735/3, y:375/3, vx:300.0, vy:200.0, shooting:false};
 var elements = new Array(52);
 var objects = new Array(52);
 var shapes = new Array(52);
+var strokes = 0;
+var prevX = 0;
+var prevY = 0;
 ctx.fillStyle="#FFFFFF";
 ctx.font = "12px Verdana white";
 for (var i = 0; i < 52; i++) {
@@ -57,6 +60,25 @@ for (var i = 0; i < 52; i++) {
 for (var i = 0; i < 52; i++) {
   shapes[i] = new Array(28);
 }
+
+// ebin =DD
+var eka = ['Corpse', 'Fasaani', 'Anjovis', 'Kalja', 'Purjo', 'Viiksi', 'Hevos', 'Piimä', 'Kives', 'Pahvi', 'Makkara',
+'Kikkeli', 'Parta', 'Jorma', 'Keijo', 'Stratosfääri', 'Hologrammi', 'Habanero', 'Haahka', 'Kerma', 'Sorsa', 'Puhveli', 'Muna',
+'Mehu', 'Peruna', 'Viina', 'Pasuuna', 'Vesi', 'Vegaani', 'Karja', 'Smegma', 'Venäjä', 'Äyriäis', 'Kullervo', 'Bugi', 'Spotti',
+'Rasva', 'Ripuli', 'Esari', 'Väliliha', 'Bongi', 'Bingo', 'Ryssä', 'Hernekeitto', 'Johannes', 'Pieru', 'Kuurna', 'Killi', 'Kalsari',
+'Burana', 'Syöpä', 'Peräpukama', 'Banaani', 'Inva', 'Vamma', 'Vessa', 'Tahna', 'Pelikaani', 'Flamingo', 'Peppu', 'Styroksi',
+'Mangusti', 'Mummo', 'Lahna', 'Töhnä', 'Kirahvi', 'Koala', 'Koralli', 'Paviaani', 'Polvi', 'SMG', 'Pilvi', 'Autisti', 'Turpa',
+'Suoli', 'Korva', 'Palli', 'Turska', 'Kurppa', 'Jehova', 'Naama'];
+var toka = ['savustamo', 'karkelo', 'mutilaatio', 'hyytelö', 'revohka', 'uhraus', 'paistos', 'kaivos', 'tehdas', 'patruuna', 'muhennos',
+'kohmelo', 'löllö', 'pöheikkö', 'ankka', 'puhdistamo', 'farmi', 'holokausti', 'leivos', 'keitto', 'paraati', 'jalostamo', 'teurastamo',
+'hepuli', 'pöhinä', 'kurnutus', 'teline', 'rupsutus', 'tiiviste', 'kiisseli', 'pulputus', 'huppeli', 'kaivio', 'maha', 'invaasio',
+'haukotus', 'ropelli', 'planeetta', 'kenguru', 'korjaamo', 'koira', 'kiillotus', 'ongelma', 'hoitola', 'erektio', 'puksutus', 'mies',
+'ruiskaus', 'patukka', 'pesula'];
+var luku = Math.floor(Math.random() * 1000);
+var rand1 = eka[Math.floor(Math.random() * eka.length)];
+var rand2 = toka[Math.floor(Math.random() * toka.length)];
+var randText = rand1 + " " + rand2 + " " + luku;
+document.getElementById("teksti").innerHTML = randText;
 
 document.addEventListener('keydown', function(event) {
     if(event.keyCode == 32) {
@@ -84,7 +106,7 @@ canvas.addEventListener('mousemove', function(event) {
 		setCursor(false);
 		mouseInBounds = false;
 	}
-		
+
 });
 
 canvas.addEventListener ('mouseout', function(event) {
@@ -94,7 +116,10 @@ canvas.addEventListener ('mouseout', function(event) {
 
 canvas.addEventListener ('mouseup', function(event) {
 	if (mouseInBounds && event.button == 0) {
+    prevX = Math.round(ball.x); // veteen menemistä varten tallentaa edellisen sijainnin
+    prevY = Math.round(ball.y);
 		shoot();
+    strokes += 1;
 	}
 });
 
@@ -129,12 +154,12 @@ var str = `1111111111111111111111111111111111111111111111111
 1000000001111110000000000000000000000000000000001
 1000000002222220000000000000000000000000000000001
 1000000002222220000000000000000000000000000000001
-1000000002222220000000000000000000000000000000001
+1000000002222220000000000000001111110000000000001
 1000000002222220000000000000000000000000000000001
 1000000000000000000000000000000000000000000000001
 1000000000000000001111111111111111110000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
+1000000000000000002222222222222222220000000000001
+1000000000000000001111111111111111110000000000001
 1000000000000000000000000000000000000000000000001
 1000000000000000000000000000000000000000000000001
 1000000000000000000000000000000000000000000000001
@@ -208,7 +233,45 @@ function processGame() { //surkeet fysiiatk pistin vaa jotai alkuu lol
 		ball.shooting = false;
 		setCursor(true);
 	}
+  checkCollision();
 	fixCoords();
+}
+
+// tarttee vielä parantelua !! =D
+function checkCollision() {
+  // SEINÄT
+  var bxr = Math.round(ball.x / 15 + ball.vx * 0.0007); // koordinaattimuunnos ruutuihin, oikea suunta
+  var bxl = Math.round((ball.x - 14) / 15 + ball.vx * 0.0007); // koordinaattimuunnos ruutuihin, vasen suunta
+  var byu = Math.round((ball.y - 14) / 15 + ball.vy * 0.0007); // koordinaattimuunnos ruutuihin, ylös
+  var byd = Math.round(ball.y / 15 + ball.vy * 0.0007); // koordinaattimuunnos ruutuihin, alas
+
+  var right = Math.min(bxr, 48); // pallon oikealla puolella oleva seinä
+  var left = Math.max(bxl, 0); // pallon vasemmalla puolella oleva seinä
+  var up = Math.max(byu, 0); // pallon yläpuolella oleva seinä
+  var down = Math.min(byd, 24); // pallon alapuolella oleva seinä
+
+  var vx = Math.round((ball.x - 7) / 15); // nykyinen x-koordinaatti
+  var hy = Math.round((ball.y - 7) / 15); // nykyinen y-koordinaatti
+
+  if (elements[right][hy] == 1 || elements[left][hy] == 1) {
+    ball.vx *= -1; // pystysuorat seinät
+    ball.vx -= ball.vx * 0.05;
+    ball.vy -= ball.vy * 0.05;
+  }
+  if (elements[vx][up] == 1 || elements[vx][down] == 1) {
+    ball.vy *= -1; // vaakasuorat seinät
+    ball.vx -= ball.vx * 0.05;
+    ball.vy -= ball.vy * 0.05;
+  }
+
+  // VESI
+  if (elements[vx][hy] == 2) {
+    ball.x = prevX;
+    ball.y = prevY;
+    ball.vx = 0;
+    ball.vy = 0;
+  }
+
 }
 
 function shoot() {
@@ -284,8 +347,8 @@ function drawLine(x0, y0, x1, y1) {
 	}
 	var length = 200;
     var dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
-    var dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1; 
-    var err = (dx > dy ? dx : -dy) / 3;        
+    var dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+    var err = (dx > dy ? dx : -dy) / 3;
     while (length > 1) {
 		length -= 1;
 		ctx.fillStyle="#800020";
@@ -326,6 +389,9 @@ function render() {
 	ctx.fillText("vx: " +Math.round(ball.vx * 100) / 100, 600, 414);
 	ctx.fillText("vy: " +Math.round(ball.vy * 100) / 100, 600, 426);
 	ctx.fillText("mouseInBounds: " +mouseInBounds, 600, 438);
+  ctx.fillText("ruutuX: " +Math.round((ball.x - 7) / 15), 600, 450);
+  ctx.fillText("ruutuY: " +Math.round((ball.y - 7) / 15), 600, 462);
+  ctx.fillText("strokes: " + strokes, 60, 390);
 	ctx.drawImage(images["overlaytest"], 0, 0);
 }
 </script>
