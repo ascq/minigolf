@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -97,7 +97,7 @@ function setCursor(b) {
 
 canvas.addEventListener('mousemove', function(event) {
 	var rect = canvas.getBoundingClientRect();
-    mouseX = event.clientX - rect.left - 0.5;
+        mouseX = event.clientX - rect.left - 0.5;
 	mouseY = event.clientY - rect.top;
 	if (!mouseInBounds && mouseY < 375) {
 		setCursor(true);
@@ -116,10 +116,10 @@ canvas.addEventListener ('mouseout', function(event) {
 
 canvas.addEventListener ('mouseup', function(event) {
 	if (mouseInBounds && event.button == 0) {
-    prevX = Math.round(ball.x); // veteen menemistä varten tallentaa edellisen sijainnin
-    prevY = Math.round(ball.y);
-		shoot();
-    strokes += 1;
+           prevX = Math.round(ball.x); // veteen menemistä varten tallentaa edellisen sijainnin
+           prevY = Math.round(ball.y);
+	   shoot();
+           strokes += 1;
 	}
 });
 
@@ -146,29 +146,56 @@ var str = `1111111111111111111111111111111111111111111111111
 1000000000000000000000000000000100000000000000001
 1000000000000000000000000000000100000000000000001
 1000000000000000000000000000000100000000000000001
-1000000000000000000000000001111111110000000000001
-1000000000000000000000000000000000000000000000001
-1111111111000000000000000000000000000000000000001
-1000000001000000000000000000000000000000000000001
-1000000001000000000000000000000000000000000000001
-1000000001111110000000000000000000000000000000001
-1000000002222220000000000000000000000000000000001
-1000000002222220000000000000000000000000000000001
+10000000000000000000000000011111111100000SS000001
+10000000000000000000000000000000000000000SS000001
+11111111110000000000000000000000000000000SS000007
+1000000001000000000000JJJJJJJJJJJJJ000000SS000007
+1000000001000000000000JJJJJJJJJJJJJ000000SS000007
+100000000111111000000055555555555556666666WWWW007
+100000000222222000000055555555555556666666WWWW001
+100000000222222000000055555555555556666666WWWW001
 1000000002222220000000000000003333330000000000001
 1000000002222220000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000004444444111111111110000000000001
-1000000000000000002222222222222222220000000000001
+10000000000000000000000000000000000000000EEEE0001
+10000000000000000044444441111111111100000EEEE0001
+10000000000000000022222222222222222200000EEEE0001
 1000000000000000001111111111111111110000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000000001
-1000000000000000000000000000000000000000000001001
+10000000000000000000000000000000000000000NNNN0001
+10000000000000000088888888888800000000000NNNN0001
+10000000000000000088888888888800000000000NNNN0001
+1000000000000000003333333333330000000000000000001
+1000000000000000009999999999990000000000000000001
+1000000000000000009999999999990000000000000001001
 1111111111111111111111111111111111111111111111111`;
 
-var elementFile = str.split('\n');
+var str2 = `1441111111111111111111111111111111111111111111441
+4UUUUUUUUUUUUUUUUUUUUUUUUIIIIIIIIIIIIIIIIIIIIIII4
+4UUUUUUUUUUUUUUUUUUUUUUUUIIIIIIIIIIIIIIIIIIIIIII4
+1UUUUUUUUUUUUUUUUUUUUUUUUIIIIIIIIIIIIIIIIIIIIIII1
+1UUUUUUUUUUUUUUUUUUUUUUUUIIIIIIIIIIIIIIIIIIIIIII1
+1NN1000000000000000000000000000000000000000000001
+1NN1000000JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ0000000001
+1SS1000000JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ0000000001
+1SS1000000JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ0000000001
+1SS1000000555555555555555555555555555550000000001
+1000000000555555555555555555555555555550000000001
+1000000000666666666666666666666666666660000000001
+1000000000666666666666666666666666666660000000001
+1000000000777777777777777777777777777770000000001
+1000000000777777777777777777777777777770000000001
+1000000000111111111111111111111111111110000000001
+1000000000NNNNNNNNNNNNNNNNNNNNNNNNNNNNN0000000001
+1000000000NNNNNNNNNNNNNNNNNNNNNNNNNNNNN0000000001
+1000000000000000000000000000000000000000000000001
+1LLLLLLLLLLLLLLLLLLLLLLLLKKKKKKKKKKKKKKKKKKKKKKK1
+1LLLLLLLLLLLLLLLLLLLLLLLLKKKKKKKKKKKKKKKKKKKKKKK1
+1LLLLLLLLLLLLLLLLLLLLLLLLKKKKKKKKKKKKKKKKKKKKKKK1
+4LLLLLLLLLLLLLLLLLLLLLLLLKKKKKKKKKKKKKKKKKKKKKKK4
+4LLLLLLLLLLLLLLLLLLLLLLLLKKKKKKKKKKKKKKKKKKKKKKK4
+1441111111111111111111111111111111111111111111441
+`;
+
+var elementFile = str2.split('\n');
 function textToArray() {
     for(var i = 0; i < elementFile.length; i++) {
         elementFile[i] = elementFile[i].split("");
@@ -203,6 +230,33 @@ function loadCourse() {
 	for (x = 0; x < 49; x++) {
 		for (y = 0; y < 25; y++) {
 	   	elements[x][y] = elementFile[y][x]; // tän vois salee koittaa kääntää oikeinpäi XD
+      if (elements[x][y] == 'J') {
+        elements[x][y] = 10;
+      }
+      if (elements[x][y] == 'S') {
+        elements[x][y] = 11;
+      }
+      if (elements[x][y] == 'E') {
+        elements[x][y] = 12;
+      }
+      if (elements[x][y] == 'N') {
+        elements[x][y] = 13;
+      }
+      if (elements[x][y] == 'W') {
+        elements[x][y] = 14;
+      }
+      if (elements[x][y] == 'K') { // kaakko
+        elements[x][y] = 15;
+      }
+      if (elements[x][y] == 'L') { // lounas
+        elements[x][y] = 16;
+      }
+      if (elements[x][y] == 'U') { // luode
+        elements[x][y] = 17;
+      }
+      if (elements[x][y] == 'I') { // koillinen
+        elements[x][y] = 18;
+      }
 		}
 	}
 	drawTrack = true;
@@ -219,21 +273,27 @@ function fixCoords() {
 		ball.y = 368;
 }
 
+function stopBall() {
+  ball.vx = 0;
+  ball.vy = 0;
+  ball.x = Math.round(ball.x);
+  ball.y = Math.round(ball.y);
+  ball.shooting = false;
+  setCursor(true);
+}
+
 function processGame() { //surkeet fysiiatk pistin vaa jotai alkuu lol
 	fixCoords();
 	ball.x += ball.vx * 0.02;
 	ball.y += ball.vy * 0.02;
 	ball.vx -= (ball.vx * 0.01);
 	ball.vy -= (ball.vy * 0.01);
-	if (ball.vx < 6 && ball.vy < 6 && ball.vx > -6 && ball.vy > -6) {
-		ball.vx = 0;
-		ball.vy = 0;
-		ball.x = Math.round(ball.x);
-		ball.y = Math.round(ball.y);
-		ball.shooting = false;
-		setCursor(true);
+        var vx = Math.round((ball.x - 7) / 15);
+        var hy = Math.round((ball.y - 7) / 15);
+	if (Math.abs(ball.vx) < 6 && Math.abs(ball.vy) < 6 && elements[vx][hy] <= 10) {
+            stopBall();
 	}
-  checkCollision();
+        checkCollision();
 	fixCoords();
 }
 
@@ -298,6 +358,134 @@ function checkCollision() {
     ball.vx /= 50;
     ball.vy /= 50;
   }
+
+  // darude sandstorm
+  if (elements[vx][hy] == 5) {
+    ball.vx -= ball.vx * 0.09;
+    ball.vy -= ball.vy * 0.09;
+  }
+
+  // muta kakku
+  if (elements[vx][hy] == 6) {
+    ball.vx -= ball.vx * 0.3;
+    ball.vy -= ball.vy * 0.3;
+  }
+
+  // vveän happo
+  if (elements[vx][hy] == 7) {
+    var startX = 735/3; // näitten tilalle sitte oikeen alku spotin koodrinaatit
+    var startY = 375/3;
+    ball.x = startX;
+    ball.y = startY;
+    ball.vx = 0;
+    ball.vy = 0;
+  }
+
+  // suon silmäkkeessä jussi
+  if (elements[vx][hy] == 8) {
+    ball.vx -= ball.vx * 0.09;
+    ball.vy -= ball.vy * 0.09;
+    if (ball.vx == 0 && ball.vy == 0) {
+       ball.x = prevX;
+       ball.y = prevY;
+    }
+  }
+
+  //hhappo suo
+  if (elements[vx][hy] == 9) {
+    var startX = 735/3; // näitten tilalle sitte oikeen alku spotin koodrinaatit
+    var startY = 375/3;
+    ball.vx -= ball.vx * 0.09;
+    ball.vy -= ball.vy * 0.09;
+    if (ball.vx == 0 && ball.vy == 0) {
+       ball.x = startX;
+       ball.y = startY;
+    }
+  }
+
+  // ice ice baby
+  if (elements[vx][hy] == 10) {
+    ball.vx += ball.vx * 0.005;
+    ball.vy += ball.vy * 0.005;
+  }
+
+  // ------ MÄET ------
+  // mäki etelään
+  if (elements[vx][hy] == 11) {
+     ball.vy += 4;
+     var alh = Math.round((ball.y - 5) / 15); // parin pikselin verran alaspäin oleva elementti palllon keskipisteestä
+     if ((elements[vx][down] == 1 || elements[vx][down] == 4 || elements[vx][alh] == 13)
+     && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+        stopBall();
+     }
+  }
+
+  // mäki itään
+  if (elements[vx][hy] == 12) {
+     ball.vx += 4;
+     var oik = Math.round((ball.x - 5) / 15); // parin pikselin verran oikealla oleva elementti
+     if ((elements[right][hy] == 1 || elements[right][hy] == 4 || elements[oik][hy] == 14)
+     && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+        stopBall();
+    }
+  }
+
+  // mäki pohjoiseen
+  if (elements[vx][hy] == 13) {
+     ball.vy -= 4;
+     var ylh = Math.round((ball.y - 9) / 15);
+     if ((elements[vx][up] == 1 || elements[vx][up] == 4 || elements[vx][ylh] == 11)
+     && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+        stopBall();
+     }
+  }
+
+  // mäki länteen
+  if (elements[vx][hy] == 14) {
+     ball.vx -= 4;
+     var vas = Math.round((ball.x - 9) / 15); // varvas XD
+     if ((elements[left][hy] == 1 || elements[left][hy] == 4 || elements[vas][hy] == 12)
+     && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+        stopBall();
+     }
+  }
+
+  // mäki kaakkoon
+  if (elements[vx][hy] == 15) {
+     ball.vx += 2.8; // suunnillee 4 jaettuna neliöjuuri 2 :DD
+     ball.vy += 2.8;
+     if ((elements[vx][down] == 4 || elements[right][hy] == 4) && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+       stopBall();
+    }
+  }
+
+  // mäki lounaaseen
+  if (elements[vx][hy] == 16) {
+     ball.vx -= 2.8;
+     ball.vy += 2.8;
+     if ((elements[vx][down] == 4 || elements[left][hy] == 4) && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+       stopBall();
+    }
+  }
+
+  // mäki luoteeseen
+  if (elements[vx][hy] == 17) {
+     ball.vx -= 2.8;
+     ball.vy -= 2.8;
+     if ((elements[vx][up] == 4 || elements[left][hy] == 4) && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+       stopBall();
+    }
+  }
+
+  // mäki koilliseen
+  if (elements[vx][hy] == 18) {
+     ball.vx += 2.8;
+     ball.vy -= 2.8;
+     if ((elements[vx][up] == 4 || elements[right][hy] == 4) && Math.abs(ball.vx) < 10 && Math.abs(ball.vy) < 10) {
+       stopBall();
+    }
+  }
+
 }
 
 function shoot() {
@@ -415,9 +603,9 @@ function render() {
 	ctx.fillText("vx: " +Math.round(ball.vx * 100) / 100, 600, 414);
 	ctx.fillText("vy: " +Math.round(ball.vy * 100) / 100, 600, 426);
 	ctx.fillText("mouseInBounds: " +mouseInBounds, 600, 438);
-  ctx.fillText("ruutuX: " +Math.round((ball.x - 7) / 15), 600, 450);
-  ctx.fillText("ruutuY: " +Math.round((ball.y - 7) / 15), 600, 462);
-  ctx.fillText("strokes: " + strokes, 60, 390);
+        ctx.fillText("ruutuX: " +Math.round((ball.x - 7) / 15), 600, 450);
+        ctx.fillText("ruutuY: " +Math.round((ball.y - 7) / 15), 600, 462);
+        ctx.fillText("strokes: " + strokes, 60, 390);
 	ctx.drawImage(images["overlaytest"], 0, 0);
 }
 </script>
