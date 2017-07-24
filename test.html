@@ -42,10 +42,12 @@ var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 var mouseX = 0;
 var mouseY = 0;
-var ball = {x:735/3, y:375/3, vx:300.0, vy:200.0, shooting:false};
+var startX = 375/3;
+var startY = 375/3;
 var elements = new Array(52);
 var objects = new Array(52);
 var shapes = new Array(52);
+var ball = {x:startX, y:startY, vx:300.0, vy:200.0, shooting:false};
 var strokes = 0;
 var prevX = 0;
 var prevY = 0;
@@ -73,7 +75,7 @@ var toka = ['savustamo', 'karkelo', 'mutilaatio', 'hyytelö', 'revohka', 'uhraus
 'kohmelo', 'löllö', 'pöheikkö', 'ankka', 'puhdistamo', 'farmi', 'holokausti', 'leivos', 'keitto', 'paraati', 'jalostamo', 'teurastamo',
 'hepuli', 'pöhinä', 'kurnutus', 'teline', 'rupsutus', 'tiiviste', 'kiisseli', 'pulputus', 'huppeli', 'kaivio', 'maha', 'invaasio',
 'haukotus', 'ropelli', 'planeetta', 'kenguru', 'korjaamo', 'koira', 'kiillotus', 'ongelma', 'hoitola', 'erektio', 'puksutus', 'mies',
-'ruiskaus', 'patukka', 'pesula'];
+'ruiskaus', 'patukka', 'pesula', 'tujautus'];
 var luku = Math.floor(Math.random() * 1000);
 var rand1 = eka[Math.floor(Math.random() * eka.length)];
 var rand2 = toka[Math.floor(Math.random() * toka.length)];
@@ -195,13 +197,47 @@ var str2 = `1441111111111111111111111111111111111111111111441
 1441111111111111111111111111111111111111111111441
 `;
 
-var elementFile = str2.split('\n');
-function textToArray() {
+var spec2 = `0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000010000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000020000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000
+`
+
+var elementFile;
+var specialFile;
+function textToArray(elem, spec) {
+  elementFile = elem.split('\n');
     for(var i = 0; i < elementFile.length; i++) {
         elementFile[i] = elementFile[i].split("");
         }
+  specialFile = spec.split('\n');
+    for(var i = 0; i < specialFile.length; i++) {
+        specialFile[i] = specialFile[i].split("");
+      }
 }
 
+textToArray(str2, spec2);
 
 loadImage("ball");
 loadImage("tileset_0");
@@ -229,7 +265,8 @@ function resourceLoaded() {
 function loadCourse() {
 	for (x = 0; x < 49; x++) {
 		for (y = 0; y < 25; y++) {
-	   	elements[x][y] = elementFile[y][x]; // tän vois salee koittaa kääntää oikeinpäi XD
+	   	elements[x][y] = elementFile[y][x];
+      objects[x][y] = specialFile[y][x]; // tän vois salee koittaa kääntää oikeinpäi XD
       if (elements[x][y] == 'J') {
         elements[x][y] = 10;
       }
@@ -256,6 +293,10 @@ function loadCourse() {
       }
       if (elements[x][y] == 'I') { // koillinen
         elements[x][y] = 18;
+      }
+      if (objects[x][y] == 1) {
+        startX = (x * 15) + 7;
+        startY = (y * 15) + 7;
       }
 		}
 	}
@@ -373,8 +414,8 @@ function checkCollision() {
 
   // vveän happo
   if (elements[vx][hy] == 7) {
-    var startX = 735/3; // näitten tilalle sitte oikeen alku spotin koodrinaatit
-    var startY = 375/3;
+    //var startX = 735/3; // näitten tilalle sitte oikeen alku spotin koodrinaatit
+  //  var startY = 375/3;
     ball.x = startX;
     ball.y = startY;
     ball.vx = 0;
@@ -393,8 +434,8 @@ function checkCollision() {
 
   //hhappo suo
   if (elements[vx][hy] == 9) {
-    var startX = 735/3; // näitten tilalle sitte oikeen alku spotin koodrinaatit
-    var startY = 375/3;
+  //  var startX = 735/3; // näitten tilalle sitte oikeen alku spotin koodrinaatit
+  //  var startY = 375/3;
     ball.vx -= ball.vx * 0.09;
     ball.vy -= ball.vy * 0.09;
     if (ball.vx == 0 && ball.vy == 0) {
@@ -606,7 +647,7 @@ function render() {
         ctx.fillText("ruutuX: " +Math.round((ball.x - 7) / 15), 600, 450);
         ctx.fillText("ruutuY: " +Math.round((ball.y - 7) / 15), 600, 462);
         ctx.fillText("strokes: " + strokes, 60, 390);
-	ctx.drawImage(images["overlaytest"], 0, 0);
+	//ctx.drawImage(images["overlaytest"], 0, 0);
 }
 </script>
 
